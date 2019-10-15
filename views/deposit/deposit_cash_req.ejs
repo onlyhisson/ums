@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include ../_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+<div class="wrapper">
+
+  <%- include ../_incl/inc_top.ejs %>
+  <%- include ../_incl/inc_submenu.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <%=title%>
+      </h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-money"></i> 충전신청</a></li>
+        <li class="breadcrumb-item active"><%=title%></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+     
+     <!-- Basic Forms -->
+      <div class="box">
+        <!--
+        <div class="box-header with-border">
+			<h3 class="box-title">KYC 인증 신청</h3>
+			<h6 class="box-subtitle">
+				<span id="is_kyc" class="text-danger"></span> 
+				<a href="http://reactiveraven.github.io/jqBootstrapValidation/"> <span class="text-cyan">[참고]</span></a>
+			</h6>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+          </div>
+        </div>
+        -->
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col">
+            	<form>
+					<div class="form-group">
+						<h5>엔젤마스터 계정 <span class="text-danger">*</span></h5>
+						<div class="controls">
+							<select name="angel_cards" id="angel_cards"required class="form-control">
+                                <option value="">엔젤마스터카드의 계정을 선택하여 주십시오.</option>
+                                <% sess.cardList.forEach((el) => { %>
+                                <option value="<%=el.card_no%>"><%=el.card_no%> [<%=el.unit%>]</option>
+                                <% }) %>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<h5>보내는 계좌 <span class="text-danger">*</span></h5>
+						<div class="controls">
+							<input type="text" name="from_account" id="from_account" class="form-control" required placeholder="보내는 계좌번호를 입력해 주십시오.">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<h5>
+							충전할 금액 
+							<span class="text-danger">*</span>
+						</h5>
+						<div class="controls">
+							<input type="text" name="amount_cash" id="amount_cash" class="form-control" required placeholder="충전할 금액을 입력해 주십시오">
+						</div>
+					</div>
+
+                    <div class="form-group">
+                        <h5>충전 시간</h5>
+                        <div class="controls">
+                            <input type="text" name="first_name" id="first_name" class="form-control bg-dark" disabled="disabled" placeholder="자동으로 입력되는 사항이니 비워두십시오.">
+                        </div>
+                    </div>
+					
+				</form>
+
+				<form id="dep_req_form">
+					<div class="form-group">
+						<h5>
+							이체확인증 업로드
+							<span class="text-danger">*</span>
+							<small> 
+								(파일 크기 <code>3Mb</code>이하)
+							</small>
+						</h5>
+						<div class="controls">
+							<div class="input-group input-file" name="Fichier1">
+								<input type="text" id="selectedFile" name="selectedFile" class="form-control selected_file" placeholder='이체확인증을 업로드하세요.' required> 
+								<span class="input-group-btn">
+									<button type="reset" class="btn btn-default border-danger del-file" >삭제</button>
+									<button type="submit" class="btn btn-info">업로드</button>
+								</span> 
+							</div>
+						</div>
+					</div>
+				</form>
+				
+				<form>
+                    <div class="form-group">
+                        <h5>입금계좌선택 <span class="text-danger">*</span></h5>
+                        <div class="controls">
+                            <select name="to_account" id="to_account" required class="form-control">
+                                <option value="">입금 계좌</option>
+                                <% for(let i=0; i<sess['accCardList'].length; i++) { %>
+                                    <option value="<%=sess['accCardList'][i].card_no%>"><%=sess['accCardList'][i].card_no%>(<%=sess['accCardList'][i].bank_name%>)</option>
+								<% } %>
+								<option value="123456-9999">테스트용 계좌</option>
+                            </select>
+                        </div>
+                    </div>
+					
+					<div class="bb-1 border-secondary h-30"></div><br>
+
+					<div class="text-xs-right" style="padding-top: 30px;">
+						<a href="javascript:void(0)" class="btn btn-success btn-lg" onclick="reqDepositCash();">확정</a>
+						<span id="kyc_verification">* 필수 입력 항목을 모두 작성하세요.</span>
+					</div>
+				</form>
+            	
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+      
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+   
+  <%- include ../_incl/inc_footer.ejs %>
+  <%- include ../_incl/inc_sidebar.ejs %>
+  
+</div>
+<!-- ./wrapper -->
+
+<%- include ../_incl/inc_scripts.ejs %>
+
+	<script>
+		let checkImage = false;	// 파일 업로드 체크
+	</script>
+
+	<script>
+		/* 파일 업로드 Form 함수 */
+		function bs_input_file() {
+			$(".input-file").before(
+				function() {
+					if ( ! $(this).prev().hasClass('input-ghost') ) {
+						var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+						element.attr("name",$(this).attr("name"));
+						element.change(function(){
+							element.next(element).find('input').val((element.val()).split('\\').pop());
+						});
+						$(this).find("button.btn-choose").click(function(){
+							element.click();
+						});
+						$(this).find("button.btn-reset").click(function(){
+							element.val(null);
+							$(this).parents(".input-file").find('input').val('');
+						});
+						$(this).find('input').css("cursor","pointer");
+						$(this).find('input').mousedown(function() {
+							$(this).parents('.input-file').prev().click();
+							return false;
+						});
+						return element;
+					}
+				}
+			);
+		}
+
+		$(function() {
+			bs_input_file();
+		});
+	</script>
+
+	<script>
+		$('#dep_req_form').on("submit", function(e) {
+			e.preventDefault();
+
+			let formData = new FormData(this);
+			//formData.append('key', 'value');
+			let uploadBtn = $(this).find('button[type=submit]');
+			uploadBtn.css('display', 'none');
+
+			if($('.input-ghost').val()){
+				$.ajax({
+					type: "POST",
+					url: "/ajax/getImageUrl",
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function(data){
+						if(data.status == '_success_' && data.picUrl !=''){
+							toastAlert(ums.success[2000], '', 'success')
+							$('#selectedFile').val(data.picUrl);
+							checkImage = true;
+							checkDepInfo();
+						}else{
+							toastAlert(data.msg, '', 'error')
+						}
+						uploadBtn.css('display', '');
+					},
+					error: function (e) {
+						toastAlert(ums.error[1000], '', 'error')
+						uploadBtn.css('display', '');
+					}
+				});
+			}else{
+				toastAlert(ums.error[2000], '', 'error')
+				uploadBtn.css('display', '');
+			}
+		})
+	</script>
+
+	<script>
+		function reqDepositCash(){
+			//$(".se-pre-con").fadeIn("slow");
+
+			if(!checkDepInfo())
+				return;
+
+			$('.btn-success').html('<i class="fa fa-cog fa-spin"></i>');
+			$('.btn-success').addClass('disabled');
+
+			$.ajax({
+					type: 'POST',
+					url: '/deposit/ajax/req_deposit_cash',
+					data: {
+						card_no: $('#angel_cards').val(),
+						from_card: $('#from_account').val(),
+						price: $('#amount_cash').val(),
+						order_date: '',
+						pic_url: $('#selectedFile').val(),
+						accept_card: $('#to_account').val()
+					},
+				success: function(data) {
+					$('.btn-success').html('확정');
+					$('.btn-success').removeClass('disabled');
+					if(data.status =='_success_' && data.code == 10000){
+						toastAlert(data.msg, '[CODE] : '+data.code, 'success')
+						window.location = data.url;
+					} else {
+						toastAlert(data.msg, '[CODE] : '+data.code, 'error')
+					}
+				}
+			})
+		}
+
+		/* 유효성 검증 */
+		checkDepInfo = () => {
+			if($('#angel_cards').val() == ''){
+				$('#kyc_verification').html(' * 엔젤카드를 선택하세요.')
+            	$('#kyc_verification').attr('class', 'text-danger')
+				return false;
+			}
+			if(!$('#from_account').val()){
+				$('#kyc_verification').html(' * 보내는 계좌를 입력하세요.')
+            	$('#kyc_verification').attr('class', 'text-danger')
+				return false;
+			}
+			if($('#amount_cash').val() == ''){
+				$('#kyc_verification').html(' * 충전할 금액을 입력하세요.')
+            	$('#kyc_verification').attr('class', 'text-danger')
+				return false;
+			}
+			if(!checkImage){
+				$('#kyc_verification').html(' * 이체확인증을 업로드 하세요.')
+            	$('#kyc_verification').attr('class', 'text-danger')
+				return false;
+			}
+			if(!$('#to_account').val()){
+				$('#kyc_verification').html(' * 입금 계좌를 선택하세요.')
+            	$('#kyc_verification').attr('class', 'text-danger')
+				return false;
+			}
+
+			$('#kyc_verification').html('');
+			return true;
+		};
+
+		/* 파일 삭제 버튼 클릭 이벤트 */
+		$('.del-file').click(function() {
+			checkImage = false;
+			checkDepInfo();
+		})
+
+		/* 입금 계좌 변경시 */
+		$(".form-control").change(function(){
+			checkDepInfo();
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include ./_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+<div class="wrapper">
+
+  <%- include ./_incl/inc_top.ejs %>
+  <%- include ./_incl/inc_submenu.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <%=title%>
+      </h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/"><i class="fa fa-commenting-o"></i> 공지사항</a></li>
+        <li class="breadcrumb-item active"><%=title%></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+
+          <div class="col-12">
+            <div class="box">
+              <div class="card-body bg-img py-70" style="background-image: url('http://www.ums.hk<%=picUrl%>')" data-overlay="5">
+                <blockquote class="blockquote blockquote-inverse no-border no-margin">
+                  <p class="font-size-22"><%=postTitle%></p>
+                  <footer><%=createTime%><cite title="Source Title">.</cite></footer>
+                </blockquote>
+              </div>
+
+              <div class="box-body">
+                <!--
+                  <h4><a href="#"><%=postTitle%></a></h4>
+                  <p><span><%=createTime%></span></p>
+                -->
+                <div class="ribbon-wrapper">
+                  <div class="ribbon ribbon-bookmark ribbon-vertical-l bg-danger"><i class="fa fa-heart"></i></div>
+                  <p class="ribbon-content" id="notice-detail"></p>
+                </div>
+
+                <!--
+                <div class="flexbox align-items-center mt-3">
+                  <a class="btn btn-bold btn-info" href="#">Read more</a>
+
+                  <div class="gap-items-4">
+                    <a class="text-muted" href="#">
+                      <i class="fa fa-heart mr-1"></i> 12
+                    </a>
+                    <a class="text-muted" href="#">
+                      <i class="fa fa-comment mr-1"></i> 3
+                    </a>
+                  </div>
+                </div>
+                -->
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+   
+  <%- include ./_incl/inc_footer.ejs %>
+  <%- include ./_incl/inc_sidebar.ejs %>
+  
+</div>
+<!-- ./wrapper -->
+
+<%- include ./_incl/inc_scripts.ejs %>
+<script>
+    String.prototype.replaceAll = function(org, dest) {
+        return this.split(org).join(dest);
+    }
+
+    window.onload = function() { 
+        let noticeHtml = "<%=noticeDetail%>";
+        noticeHtml = noticeHtml.replaceAll("&lt;", "<")
+        noticeHtml = noticeHtml.replaceAll("&gt;", ">")
+        $('#notice-detail').html(noticeHtml);
+    }
+</script>
+
+
+</body>
+</html>

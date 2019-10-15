@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include ./_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition">
+	
+	<div class="container h-p100 error-body">
+		<div class="row h-p100 align-items-center">
+			<div class="col">	
+			  <div class="error-page bg-inverse bg-transparent">
+				<div class="error-content">
+					<div class="container">
+					  <h2 class="headline text-white"> <i class="fa fa-gear fa-spin"></i></h2>
+					  <h2 class="margin-top-0"><i class="fa fa-bell text-danger"></i> <%=code%> <i class="fa fa-bell text-danger"></i></h2>
+                      <h3 class="margin-top-0"><i class="fa fa-warning text-warning"></i> <%=message%></h3>
+                      <div class="text-center"><a href="javascript:void(0)" class="btn btn-info btn-block margin-top-10">이전 페이지 이동 (<span id="countDown">5</span>)</a></div>
+				  </div>
+				</div>
+				<!-- /.error-content -->
+				<footer class="mt-35">
+					Copyright &copy; 2018 <a href="https://www.multipurposethemes.com/" class="text-white">Multi-Purpose Themes</a>. All Rights Reserved.
+				</footer>
+			  </div>
+			  <!-- /.error-page -->
+			</div>
+		</div>
+	</div>
+
+	<%- include ./_incl/inc_scripts.ejs %>
+
+	<script>
+	$(document).ready(function() {
+		let count = 5;
+		setInterval(function() {
+			count--;
+			$('#countDown').html(count)
+			if(count == 0){
+				history.go(-1);
+			}
+		}, 1000)
+
+	})
+	$('.btn-info').click(function() {
+		history.go(-1);
+	})
+	
+	</script>
+</body>
+</html>

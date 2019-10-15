@@ -1,0 +1,127 @@
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+    <!-- sidebar -->
+    <section class="sidebar">
+    <!-- Sidebar user panel -->
+    <div class="user-panel">
+        <div class="ulogo">
+            <a href="/">
+            <!-- logo for regular state and mobile devices -->
+            <!--
+            <span><b>Crypto </b>Admin</span>
+            -->
+                <img id="whc_logo" src="/assets2/images/whc_logo_white.png" style="width: 50px; height: 50px" alt="..." class="">
+            </a>
+        </div>
+        <div class="image">
+        <img src="/images2/user.png" class="rounded-circle" alt="User Image">
+        </div>
+        <div class="info info_menu">
+            <p>Welcome, <span class="text-warning"><%=sess.email%></span></p>
+        <!--
+            <a href="" class="link" data-toggle="tooltip" title="" data-original-title="Email"><i class="ion ion-android-mail"></i></a>
+        -->
+            <a href="/users/update_pw" class="link" data-toggle="tooltip" title="" data-original-title="비밀번호 변경"><i class="ion ion-gear-b"></i></a>
+            <a href="/logout" class="link" data-toggle="tooltip" title="" data-original-title="로그아웃"><i class="ion ion-power"></i></a>
+        </div>
+    </div>
+    
+    <!-- sidebar menu -->
+    <ul class="sidebar-menu" data-widget="tree">
+        <li class="nav-devider"></li>
+        <li class="header nav-small-cap">MAIN</li>
+        <li>
+            <a href="/">
+                <i class="fa fa-commenting-o"></i> 
+                <span>공지사항</span>
+                <span class="pull-right-container">
+                <i class="fa pull-right"></i>
+                </span>
+            </a>
+        </li>
+
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-money"></i>
+                <span>충전신청</span>
+                <span class="pull-right-container">
+                <i class="fa fa-angle-right pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="/deposit/deposit_cash_req">충전신청(현금)</a></li>
+                <li><a href="/deposit/deposit_epay_req">충전신청(EPAY)</a></li>
+            </ul>
+        </li>
+
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-list-ul"></i>
+                <span>충전내역</span>
+                <span class="pull-right-container">
+                <i class="fa fa-angle-right pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="/deposit/deposit_cash_bd">충전내역(현금)</a></li>
+                <li><a href="/deposit/deposit_epay_bd">충전내역(EPAY)</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="/deposit/deposit_crypto_currency">
+                <i class="fa fa-btc"></i> 
+                <span>암호화폐 입금</span>
+                <span class="pull-right-container">
+                <i class="fa pull-right"></i>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a href="/deposit/deposit_total_bd">
+                <i class="fa fa-list-alt"></i> 
+                <span>총입금내역 현황</span>
+                <span class="pull-right-container">
+                <i class="fa pull-right"></i>
+                </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/suggest/suggestion">
+                <i class="fa fa-envelope-o"></i> 
+                <span>문의/건의</span>
+                <span class="pull-right-container">
+                <i class="fa pull-right"></i>
+                </span>
+            </a>
+        </li>
+
+        
+        <li class="header nav-small-cap">거래소</li>
+        <li>
+            <a href="/zbg">
+                <i class="fa fa-dashboard"></i> 
+                <span>대쉬보드</span>
+                <span class="pull-right-container">
+                <i class="fa pull-right"></i>
+                </span>
+            </a>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-money"></i>
+                <span>자산 관리</span>
+                <span class="pull-right-container">
+                <i class="fa fa-angle-right pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="/zbg/assets_status">보유 자산</a></li>
+            </ul>
+        </li>
+        
+    </ul>
+    </section>
+</aside>

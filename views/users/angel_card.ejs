@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include ../_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+<div class="wrapper">
+
+  <%- include ../_incl/inc_top.ejs %>
+  <%- include ../_incl/inc_submenu.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <%=title%>
+      </h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-money"></i> MAIN</a></li>
+        <li class="breadcrumb-item active"><%=title%></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+     
+     <!-- Basic Forms -->
+      <div class="box">
+        <!--
+        <div class="box-header with-border">
+			<h3 class="box-title">TITLE</h3>
+			<h6 class="box-subtitle">
+				<span id="is_kyc" class="text-danger"></span> 
+				<a href="http://reactiveraven.github.io/jqBootstrapValidation/"> <span class="text-cyan">[참고]</span></a>
+			</h6>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+          </div>
+        </div>
+        -->
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col">
+            	<form id="bind_form" action="" method="post">
+                    <div class="form-group">
+                        <h5>엔젤마스터카드 <span class="text-danger">*</span></h5>
+                        <div class="controls">
+                            <input type="text" name="angelAccount" id="angelAccount" class="form-control" required placeholder="변경할 비밀번호를 입력하세요.">
+                        </div>
+                    </div>
+
+                    <div class="bb-1 border-secondary h-30"></div><br>
+
+                    <div class="text-xs-right" style="padding-top: 30px;">
+                    <button type="submit" class="btn btn-success btn-lg">확정</button>
+                    <span id="kyc_verification"></span>
+                    </div>
+                </form>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+      
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+   
+  <%- include ../_incl/inc_footer.ejs %>
+  <%- include ../_incl/inc_sidebar.ejs %>
+  
+</div>
+<!-- ./wrapper -->
+
+<%- include ../_incl/inc_scripts.ejs %>
+<script>
+$('#bind_form').on("submit", function(e) {
+    e.preventDefault();
+    if(!checkDepInfo())
+        return;
+
+    if($('#angelAccount').val()){
+        $.ajax({
+            type: "POST",
+            url: "/users/ajax/bindCard",
+            data: {
+                card_no:$('#angelAccount').val(),
+            },
+            success: function(data){
+                if(data.status == '_success_'){
+                    toastAlert(data.msg, '[CODE] : '+data.code, 'success')
+                }else{
+                    toastAlert(data.msg, '[CODE] : '+data.code, 'error')
+                }
+            },
+            error: function (e) {
+                console.log(e)
+                toastAlert(ums.error[1000], '', 'error')
+        }
+        });
+    }else{
+        toastAlert(ums.error[2001], '', 'error')
+    }
+})
+
+</script>
+
+<script>
+    /* 유효성 검증 */
+    checkDepInfo = () => {
+
+        if($('#angelAccount').val() == ''){
+            $('#kyc_verification').html(' * 엔카드번호를 입력하십시오.')
+            $('#kyc_verification').attr('class', 'text-danger')
+            return false;
+        }
+
+        $('#kyc_verification').html('');
+        return true;
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include ./_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition login-page">
+
+    <div class="">
+        <!-- Tab panes -->
+        <div class="box-body tab-content">
+          <div class="tab-pane fade active show" id="login_form">
+
+            <div class="login-box">
+              <div class="login-logo">
+                <img src="/images2/whc_logo_white.png" width="90" height="90">
+              </div>
+
+              <!-- /.login-logo -->
+              <div class="login-box-body">
+                <h3 class="text-center">UMS 회원시스템</h3>
+            
+                <form action="" method="post" class="form-element">
+                  <div class="form-group has-feedback">
+                    <input type="email" id="uid" class="form-control" placeholder="Email ID" value="">
+                    <span class="ion ion-email form-control-feedback"></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="password" id="upass" class="form-control" placeholder="Password" value="">
+                    <span class="ion ion-locked form-control-feedback"></span>
+                  </div>
+                  <div class="row">
+                    <!--
+                    <div class="col-6">
+                      <div class="checkbox">
+                        <input type="checkbox" id="basic_checkbox_1" >
+                        <label for="basic_checkbox_1">ID 저장</label>
+                      </div>
+                    </div>
+                    -->
+                    <!-- /.col -->
+                    <!--
+                    <div class="col-6">
+                      <div class="fog-pwd">
+                        <a href="javascript:void(0)"><i class="ion ion-locked"></i> 비밀번호를 분실했나요?</a><br>
+                      </div>
+                    </div>
+                    -->
+                    <!-- /.col -->
+                    <div class="col-12 text-center">
+                      <a href="javascript:void(0);" class="btn btn-info btn-block margin-top-10 go-login">로그인</a>
+                    </div>
+                    <!-- /.col -->
+                  </div>
+                </form>
+                <!--
+                <div class="social-auth-links text-center">
+                  <p>- OR -</p>
+                  <a href="#" class="btn btn-social-icon btn-circle btn-facebook"><i class="fa fa-facebook"></i></a>
+                  <a href="#" class="btn btn-social-icon btn-circle btn-google"><i class="fa fa-google-plus"></i></a>
+                </div>
+                -->
+                <!-- /.social-auth-links -->
+            
+                <div class="margin-top-30 text-center">
+                  <p>처음이신가요?</p>
+                  <ul class="nav nav-tabs nav-tabs-cyan nav-justified" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link m-l-5 login-register" data-toggle="tab" href="#register_form" role="tab"><span class="text-secondary">[회원가입] 이동</span></a>
+                    </li>
+                  </ul>
+                </div>
+            
+              </div>
+              <!-- /.login-box-body -->
+            </div>
+            <!-- /.login-box -->
+
+          </div>
+          <div class="tab-pane fade" id="register_form">
+
+            <div class="register-box">
+              <div class="login-logo" style="margin-bottom: 0px;">
+                <img src="/images2/whc_logo_white.png" width="90" height="90">
+              </div>
+
+              <div class="register-box-body">
+                <h3 class="text-center">UMS 회원시스템</h3>
+            
+                <form action="" method="post" class="form-element">
+                  <div class="form-group has-feedback">
+                    <input type="text" class="form-control" id="merchant_id" placeholder="대리번호">
+                    <span class="ion ion-log-in form-control-feedback "><span class="text-danger"> *</span></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="email" class="form-control" id="email" placeholder="이메일">
+                    <span class="ion ion-email form-control-feedback "><span class="text-danger"> *</span></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="text" class="form-control" id="last_name" placeholder="성">
+                    <span class="ion ion-person form-control-feedback "><span class="text-danger"> *</span></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="text" class="form-control" id="first_name" placeholder="이름">
+                    <span class="ion ion-person form-control-feedback "><span class="text-danger"> *</span></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="password" class="form-control" id="card_no" placeholder="카드번호">
+                    <span class="ion ion-email form-control-feedback "><span class="text-danger"> *</span></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="password" name="password" class="form-control" id="pwd" placeholder="비밀번호">
+                    <span class="ion ion-locked form-control-feedback "><span class="text-danger"> *</span></span>
+                  </div>
+                  <div class="form-group has-feedback">
+                    <input type="password" name="password2" class="form-control" id="rePwd" placeholder="비밀번호 재입력">
+                    <span class="ion ion-locked form-control-feedback "><span class="text-danger"> *</span></span>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="checkbox">
+                        <input type="checkbox" id="basic_checkbox_1" checked>
+                        <label for="basic_checkbox_1">
+                          약관에 동의합니다.
+                          <a href="#"> <b class="text-info"> [약관]</b></a>
+                        </label>
+                      </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-12 text-center">
+                      <a href="javascript:void(0);" class="btn btn-info btn-block margin-top-10 go-register">가입 신청</a>
+                    </div>
+                    <!-- /.col -->
+                  </div>
+                </form>
+                <!--
+                <div class="social-auth-links text-center">
+                  <p>- OR -</p>
+                  <a href="#" class="btn btn-social-icon btn-circle btn-facebook"><i class="fa fa-facebook"></i></a>
+                  <a href="#" class="btn btn-social-icon btn-circle btn-google"><i class="fa fa-google-plus"></i></a>
+                </div>
+                -->
+              <!-- /.social-auth-links -->
+                
+                  <div class="margin-top-20 text-center">
+                      <p>계정이 있으신가요?</p>
+                    <ul class="nav nav-tabs nav-tabs-cyan nav-justified" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link m-l-5 login-register" id="move_login" data-toggle="tab" href="#login_form" role="tab"><span class="text-secondary">[로그인] 이동</span></a>
+                      </li>
+                    </ul>
+                  </div>
+                
+              </div>
+              <!-- /.form-box -->
+            </div>
+            <!-- /.register-box -->
+
+          </div>
+        </div>
+      </div>
+
+  <%- include ./_incl/inc_scripts.ejs %>
+
+  <!-- SlimScroll -->
+  <script src="/assets2/vendor_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+
+  <!-- FastClick -->
+  <script src="/assets2/vendor_components/fastclick/lib/fastclick.js"></script>
+
+  <!-- Crypto_Admin App -->
+  <script src="/assets2/js/template.js"></script>
+
+  <!-- Crypto_Admin for demo purposes -->
+  <script src="/assets2/js/demo.js"></script>
+
+  <!-- toast -->
+  <script src="/assets2/vendor_components/jquery-toast-plugin-master/src/jquery.toast.js"></script>
+  <script src="/assets2/js/pages/toastr.js"></script>
+
+  <!-- Crypto_Admin for demo purposes -->
+  <script src="/assets2/js/pages/notification.js"></script>
+
+  <script>
+    /* 로그인 - 회원가입 active 해제 */
+    $('.login-register').click(function() {
+      $('.login-register').removeClass('active');
+      $('.login-register').removeClass('show');
+    } );
+  </script>
+
+  <script>
+    $(document).ready(function(){
+
+      if (window.history && window.history.pushState) {
+        $(window).on('popstate', function(e) {
+          var hashLocation = location.hash;
+          console.log('hashLocation : ', hashLocation)
+          var hashSplit = hashLocation.split("#!/");
+          console.log('hashSplit : ', hashSplit)
+          var hashName = hashSplit[1];
+          console.log('hashName : ', hashName)
+          console.log('window.location.hash : ', window.location.hash)
+
+          if (hashName !== '') {
+            var hash = window.location.hash;
+            if (hash === '') {
+              location.href='/';
+            }
+          }else{
+            location.href='/';
+          }
+        });
+      }
+
+      /*
+      add histroy entry
+      param1:Data objects to save => history.state can be used as data
+      param2:title to change
+      param3:URL to change
+      */
+      window.history.pushState('forward', null, '/');
+    })
+  
+  </script>
+  <script>
+    /* 로그인 */
+    $('.go-login').click(function(){
+      //검증
+      if($('#uid').val().trim().length==0){
+        toastAlert('아이디를 입력하세요.', '', 'warning')
+        $('#uid').focus();
+        return false;
+      }
+
+      if($('#upass').val().trim().length==0){
+        toastAlert('비밀번호를 입력하세요.', '', 'warning')
+        $('#upass').focus();
+        return false;
+      }
+      goLogin();
+    })
+
+    /* 회원가입 */
+    $('.go-register').click(function() {
+      //검증
+      //verifyElement($('#merchant_id'))
+
+      $.ajax({
+        type: 'POST',
+        url: '/register',
+        data: {
+          merchant_id:$('#merchant_id').val(),
+          email:$('#email').val(),
+          last_name:$('#last_name').val(),
+          first_name:$('#first_name').val(),
+          card_no:$('#card_no').val(),
+          pwd:$('#pwd').val()
+        },
+        success: function(data) {
+          if(data.status =='_success_'){
+            if(data.code == 10000) {
+              toastAlert(data.msg, '[CODE] : '+data.code, 'success')
+              $('#move_login').click();
+            } else {
+              toastAlert(data.msg, '[CODE] : '+data.code, 'warning')
+            }
+          } else {
+            toastAlert(data.msg, '[CODE] : '+data.code, 'error')
+          }
+        }
+      })
+    })
+    
+    function goLogin(){
+
+      $(".se-pre-con").fadeIn("slow");
+
+      $.ajax({
+        type: 'POST',
+        url: '/login',
+        data: {
+          uid:$('#uid').val(),
+          upass:$('#upass').val()
+        },
+        success: function(data) {
+          if(data.status =='_success_'){
+            window.location = "/";
+          } else {
+            console.log(data.status)
+            $(".se-pre-con").fadeOut("slow");
+            toastAlert(data.msg, '[CODE] : '+data.code, 'error')
+          }
+        }
+      })
+    }
+
+    function verifyElement(obj) {
+      if(obj.val().trim().length==0){
+        alert(obj.attr('placeholder') + ' 값을 입력하세요.')
+        obj.focus();
+        return false;
+      }
+    }
+  </script>
+
+</body>
+</html>

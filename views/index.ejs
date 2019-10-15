@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include ./_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+<div class="wrapper">
+
+  <%- include ./_incl/inc_top.ejs %>
+  <%- include ./_incl/inc_submenu.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <%=title%>
+      </h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-commenting-o"></i> MAIN</a></li>
+        <li class="breadcrumb-item active"><%=title%></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+
+        <!-- START CUSTOM TABS -->
+        <!--
+        <h2 class="page-header">Custom Tabs</h2>
+        -->
+
+        <div class="row">
+            <div class="col-md-12 col-lg-12">
+                <!-- Custom Tabs -->
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <% for(let i=0; i < sess['noticeList'].length; i++){ %>        
+                        <li onclick="getNoticeOneList(<%=sess['noticeList'][i].id%>)">
+                            <a class="<%if(i==0){%>active<%}%>" href="#tab_<%=sess['noticeList'][i].id%>" data-toggle="tab">
+                                <%=sess['noticeList'][i].title%>
+                            </a>
+                        </li>
+                        <% } %>         
+                        <!--
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Dropdown</a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-item" role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                                <li class="dropdown-item" role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                                <li class="dropdown-item" role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                                <li role="presentation" class="dropdown-divider"></li>
+                                <li class="dropdown-item" role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                            </ul>
+                         </li>
+                         -->
+                        <li class="float-right icon-btn"><a href="#" class="text-muted"><i class="fa fa-gear fa-spin"></i></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <% for(let i = 0; i < sess['noticeList'].length; i++){ %>
+                        <div class="tab-pane <%if(i==0){%>active<%}%>" id="tab_<%=sess['noticeList'][i].id%>">
+                            <div class="col-md-12 col-12">
+                                <div class="box bg-inverse bg-dark">
+                                    <div class="media-list media-list-divided media-list-hover tabClass_<%=sess['noticeList'][i].id%>">
+                                    <% if(noticeOneList.length < 1){ %>       
+                                        <%=sess['noticeList'][i].title%> 기록이 없습니다.
+                                    <% } else {
+                                        for(let j = 0; j < noticeOneList.length; j++){
+                                            if(noticeOneList[j].cate_id == sess['noticeList'][i].id){ %>
+                                        <div class="media" onclick="moveDetailNoitce(<%=sess['noticeList'][i].id%>, <%=noticeOneList[j].id%>)">
+                                            <a class="avatar avatar-lg" href="#" style="width: 60px">
+                                                <img src="http://www.ums.hk<%=noticeOneList[j].pic_url%>" alt="...">
+                                            </a>
+    
+                                            <div class="media-body">
+                                                <p>
+                                                    <a class="text-white hover-info" href="/notice_detail/<%=sess['noticeList'][i].id%>/<%=noticeOneList[j].id%>" target="">
+                                                        <strong><%=noticeOneList[j].title%></strong>
+                                                    </a>
+                                                    <small class="sidetitle"><%=sess['noticeList'][i].title%></small>
+                                                </p>
+                                                <p><%=noticeOneList[j].create_at%></p>
+    
+                                                <!--
+                                                <nav class="nav mt-2">
+                                                    <a class="nav-link text-white hover-info" href="#"><i class="fa fa-facebook"></i></a>
+                                                    <a class="nav-link text-white hover-info" href="#"><i class="fa fa-twitter"></i></a>
+                                                    <a class="nav-link text-white hover-info" href="#"><i class="fa fa-github"></i></a>
+                                                    <a class="nav-link text-white hover-info" href="#"><i class="fa fa-linkedin"></i></a>
+                                                </nav>
+                                                -->
+                                            </div>
+    
+                                            <!--
+                                            <div class="media-right gap-items">
+                                                <a class="media-action lead" href="#" data-toggle="tooltip" title="Orders"><i class="ti-shopping-cart"></i></a>
+                                                <a class="media-action lead" href="#" data-toggle="tooltip" title="Receipts"><i class="ti-receipt"></i></a>
+    
+                                                <div class="btn-group">
+                                                    <a class="media-action lead" href="#" data-toggle="dropdown"><i class="ion-android-more-vertical"></i></a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item" href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                                                        <a class="dropdown-item" href="#"><i class="fa fa-fw fa-comments"></i> Messages</a>
+                                                        <a class="dropdown-item" href="#"><i class="fa fa-fw fa-phone"></i> Call</a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="#"><i class="fa fa-fw fa-remove"></i> Remove</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            -->
+                                        </div>
+                                        <% }}} %>
+                                    </div>
+                                    <!--
+                                    <nav class="mt-15 pb-10">
+                                        <ul class="pagination justify-content-center">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#">
+                                            <span class="ion-ios-arrow-thin-left"></span>
+                                            </a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">
+                                            <span class="ion-ios-arrow-thin-right"></span>
+                                            </a>
+                                        </li>
+                                        </ul>
+                                    </nav>
+                                    -->
+                                </div>
+                            </div>
+
+                        </div>
+                        <% } %>
+
+
+
+                        
+                    <!-- /.tab-content -->
+                </div>
+                <!-- nav-tabs-custom -->
+            </div>
+            <!-- /.col -->
+
+        </div>
+        <!-- /.row -->
+        <!-- END CUSTOM TABS -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+   
+  <%- include ./_incl/inc_footer.ejs %>
+  <%- include ./_incl/inc_sidebar.ejs %>
+  
+</div>
+<!-- ./wrapper -->
+
+<%- include ./_incl/inc_scripts.ejs %>
+
+<script>
+    function getNoticeOneList(cateId) {
+        let html = '';
+        $.ajax({
+            type: 'POST',
+            url: '/ajax/getNoticeOneList',
+            data: {
+            cateId: cateId
+            },
+            success: function(data) {
+                if(data.status == '_success_'){
+
+                    if(data.noticeOneList.length < 1) {
+                        html = '해당 카테고리의 게시글이 없습니다.'
+                        $(".tabClass_"+cateId).html(html);
+                        return;
+                    }
+                        
+                    data.noticeOneList.forEach(function(item) {
+
+                        html += '<div class="media"> '
+                        html += '    <a class="avatar avatar-lg" href="#" style="width: 60px"> '
+                        html += '        <img src="http://www.ums.hk'+ item.pic_url+ '" alt="..."> '
+                        html += '    </a> '
+                        html += '    <div class="media-body"> '
+                        html += '        <p> '
+                        html += '            <a class="text-white hover-info" href="/notice_detail/' + item.cate_id + '/' + item.id + '" target=""> '
+                        html += '                <strong>' + item.title + '</strong> '
+                        html += '            </a> '
+                        html += '            <small class="sidetitle">' + item.title + '</small> '
+                        html += '        </p> '
+                        html += '        <p>' + item.create_at + '</p> '
+                        html += '    </div> '
+                        html += '</div> '
+                    })
+
+                    $(".tabClass_"+cateId).html(html);
+                } else {
+                    toastAlert(data.msg, '', 'error')
+                    $(".tabClass_"+cateId).html('');
+                }
+            }
+        })
+    }
+
+</script>
+
+<script>
+moveDetailNoitce = (noticeId, noticeOneId) => {
+    window.location.href = '/notice_detail/'+noticeId+'/'+noticeOneId;
+}
+
+</script>
+
+</body>
+</html>

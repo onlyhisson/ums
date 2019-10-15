@@ -1,0 +1,109 @@
+<!-- page loader -->
+<div class="se-pre-con"></div>
+
+<!-- jQuery 3 -->
+<script src="/assets2/vendor_components/jquery/dist/jquery.min.js"></script>
+
+<!-- popper -->
+<script src="/assets2/vendor_components/popper/dist/popper.min.js"></script>
+
+<!-- Bootstrap 4.0-->
+<script src="/assets2/vendor_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Select2 -->
+<script src="/assets2/vendor_components/select2/dist/js/select2.full.js"></script>
+
+<!-- InputMask -->
+<script src="/assets2/vendor_plugins/input-mask/jquery.inputmask.js"></script>
+<script src="/assets2/vendor_plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="/assets2/vendor_plugins/input-mask/jquery.inputmask.extensions.js"></script>
+
+<!-- date-range-picker -->
+<script src="/assets2/vendor_components/moment/min/moment.min.js"></script>
+<script src="/assets2/vendor_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+<!-- bootstrap datepicker -->
+<script src="/assets2/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+
+<!-- bootstrap color picker -->
+<script src="/assets2/vendor_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+
+<!-- bootstrap time picker -->
+<script src="/assets2/vendor_plugins/timepicker/bootstrap-timepicker.min.js"></script>
+
+<!-- SlimScroll -->
+<script src="/assets2/vendor_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- iCheck 1.0.1 -->
+<script src="/assets2/vendor_plugins/iCheck/icheck.min.js"></script>
+	
+<!-- FastClick -->
+<script src="/assets2/vendor_components/fastclick/lib/fastclick.js"></script>
+
+<!-- Crypto_Admin App -->
+<script src="/assets2/js/template.js"></script>
+
+<!-- Crypto_Admin for demo purposes -->
+<script src="/assets2/js/demo.js"></script>
+
+<!-- Crypto_Admin for advanced form element -->
+<script src="/assets2/js/pages/advanced-form-element.js"></script>
+
+<!-- toast -->
+<script src="/assets2/vendor_components/jquery-toast-plugin-master/src/jquery.toast.js"></script>
+<script src="/assets2/js/pages/toastr.js"></script>
+
+<script>
+
+    function replaceAll(str, searchStr, replaceStr) {
+        return str.split(searchStr).join(replaceStr);
+    }
+
+    $(document).ready(function() {
+        // Animate loader off screen
+        $(".se-pre-con").fadeOut("slow");
+
+        // 서브메뉴 클릭시 페이지로더 바로 띄우기
+        $(".sidebar-menu").find('li a').bind('click', function(e) {
+            if($(this).attr('href') != '#')
+                $(".se-pre-con").fadeIn("slow");
+        })
+
+        $(".info-menu").find('a').bind('click', function(e) {
+            if($(this).attr('href') != '#')
+                $(".se-pre-con").fadeIn("slow");
+        })
+        
+        $(".user-body").find('a').bind('click', function(e) {
+            if($(this).attr('href') != '#')
+                $(".se-pre-con").fadeIn("slow");
+        })
+    });
+
+    const ums = {
+        success: {
+            1000: "문의글을 게시했습니다.",
+            2000: "파일을 업로드 했습니다."
+        },
+        error : {
+            1000: "로컬 서버 데이터 요청 에러",
+            2000: "파일을 업로드하세요.",
+            2001: "엔젤마스터카드를 입력하세요.",
+            3000: "API 서버 이미지 업로드 실패"
+        },
+        kycStatus: ['제출되지 않음', '제출 후 심사중', '심사 통과', '심사 통과 되지 않음, 다시 제출 요망']
+    }
+
+    toastAlert = (title, msg, tstType) => {
+        $.toast({
+            heading: title,
+            text: msg,
+            position: 'top-right',
+            loaderBg: '#ff6849',
+            icon: tstType,      // info, warning, success, error
+            hideAfter: 3000,
+            stack: 6
+        });
+    }
+
+</script>

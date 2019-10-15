@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include ../_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+<div class="wrapper">
+
+  <%- include ../_incl/inc_top.ejs %>
+  <%- include ../_incl/inc_submenu.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <%=title%>
+      </h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-money"></i> 충전신청</a></li>
+        <li class="breadcrumb-item active"><%=title%></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+     
+     <!-- Basic Forms -->
+      <div class="box">
+        <!--
+        <div class="box-header with-border">
+			<h3 class="box-title">KYC 인증 신청</h3>
+			<h6 class="box-subtitle">
+				<span id="is_kyc" class="text-danger"></span> 
+				<a href="http://reactiveraven.github.io/jqBootstrapValidation/"> <span class="text-cyan">[참고]</span></a>
+			</h6>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+          </div>
+        </div>
+        -->
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col">
+            	<form>
+                <div class="form-group">
+                  <h5>입금할 화폐 종류 <span class="text-danger">*</span></h5>
+                  <div class="controls">
+                    <select name="angel_cards" id="angel_cards" required class="form-control">
+                      <option value="">입금 계정을 선택하여 주십시오</option>
+                      <% sess.cardList.forEach((el) => { %>
+                      <option value="<%=el.card_no%>"><%=el.card_no%> [<%=el.unit%>]</option>
+                    <% }) %>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <h5>입금할 금액 <span class="text-danger">*</span></h5>
+                  <div class="controls">
+                    <input type="text" name="price" id="price" class="form-control" required placeholder="1000 단위로 금액을 입력하세요.">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <h5>입금화폐 <span class="text-danger">*</span></h5>
+                  <div class="controls">
+                    <select name="channel" id="channel" required class="form-control">
+                      <option value="">입금 화폐을 선택하여 주십시오</option>
+                      <option value="1">원화(KRW)</option>
+                      <!--
+                      <option value="2">필리핀 화폐</option>
+                      -->
+                      <option value="3">홍콩달러(HKD)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <h5>충전구분 <span class="text-danger">*</span><span class="text-info" data-toggle="modal" data-target="#modal-center">[참조]</span></h5>
+                  <div class="controls">
+                    <select name="channel_type" id="channel_type" required class="form-control">
+                      <option value="0">T+0</option>
+                      <option value="1">T+2</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <h5>
+                    입금 동의
+                    <span class="text-danger">*</span>
+                  </h5>
+                  <div class="demo-checkbox">
+                      <input type="checkbox" id="ums_check"/>
+                      <label for="ums_check">
+                        <a href="/user_protocol" class="text-info" target="_blank">UMS사용자협의</a>
+                      </label>
+                  </div>
+                </div>
+
+                <div class="bb-1 border-secondary h-30"></div><br>
+
+                <div class="text-xs-right" style="padding-top: 30px;">
+                  <a href="javascript:void(0)" class="btn btn-success btn-lg" onclick="reqDepositEpay();">확정</a>
+                  <span id="kyc_verification">* 필수 입력 항목을 모두 작성하세요.</span>
+                </div>
+              </form>
+
+       
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+      
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+   
+  <%- include ../_incl/inc_footer.ejs %>
+  <%- include ../_incl/inc_sidebar.ejs %>
+  <%- include ../_incl/inc_modal2.ejs %>
+  
+</div>
+<!-- ./wrapper -->
+
+<%- include ../_incl/inc_scripts.ejs %>
+
+<script>
+    function reqDepositEpay(){
+
+      //$(".se-pre-con").fadeIn("slow");
+      if(!checkDepInfo())
+        return;
+
+      $('.btn-success').html('<i class="fa fa-cog fa-spin"></i>');
+			$('.btn-success').addClass('disabled');
+
+      $.ajax({
+        type: 'POST',
+        url: '/deposit/ajax/req_deposit_epay',
+        data: {
+          card_no: $('#angel_cards').val(),
+          price: $('#price').val(),
+          channel: $('#channel').val(),
+          channel_type: $('#channel_type').val(),
+          return_url: $('#return_url').val(),
+          error_url: $('#error_url').val()
+        },
+        success: function(data) {
+          if(data.status =='_success_' && data.code==10000){
+            toastAlert(data.msg, '[CODE] : '+data.code, 'success')
+            window.location = data.url;
+          } else {
+            toastAlert(data.msg, '[CODE] : '+data.code, 'error')
+          }
+          $('.btn-success').html('확정');
+          $('.btn-success').removeClass('disabled');
+        }
+      })
+    }
+
+    /* 유효성 검증 */
+		checkDepInfo = () => {
+
+      if($('#angel_cards').val() == ''){
+        $('#kyc_verification').html(' * 입금 계정을 선택하여 주십시오.')
+        $('#kyc_verification').attr('class', 'text-danger')
+        return false;
+      }
+      if($('#price').val() == ''){
+        $('#kyc_verification').html(' * 입금할 금액을 입력하십시오.')
+        $('#kyc_verification').attr('class', 'text-danger')
+        return false;
+      }
+      if(!$('#channel').val()){
+        $('#kyc_verification').html(' * 입금 화폐를 선택하여 주십시오.')
+        $('#kyc_verification').attr('class', 'text-danger')
+        return false;
+      }
+      
+      if(!$("input:checkbox[id='ums_check']").is(":checked")){
+        $('#kyc_verification').html(' * UMS사용자협의에 체크하여 주십시오.')
+        $('#kyc_verification').attr('class', 'text-danger')
+        return false;
+      }
+
+			$('#kyc_verification').html('');
+			return true;
+		};
+  </script>
+</body>
+</html>

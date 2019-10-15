@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include ../_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+<div class="wrapper">
+
+  <%- include ../_incl/inc_top.ejs %>
+  <%- include ../_incl/inc_submenu.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <%=title%>
+        <small class="text-warning"><%=curType%></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-bank"></i> 거래소</a></li>
+        <li class="breadcrumb-item active"><%=title%></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+		
+		<div class="row">
+
+			<div class="col-xl-3 col-12">
+				<%coinList.forEach(function(el){%>
+				<div class="box box-body">
+					<div class="flexbox">
+						<h6 class="text-uppercase"><%=el.replace('_', '/')%></h6>
+						<h6>
+							<%if( Number(statusTotalMarket[el][5]) > 0 ) { %>
+								<i class="ion-android-arrow-dropup text-danger font-size-18 mr-1"></i> 
+							<%} else if (Number(statusTotalMarket[el][5]) < 0){%>
+								<i class="ion-android-arrow-dropdown text-info font-size-18 mr-1"></i> 
+							<% } %>
+							%<%=statusTotalMarket[el][5]%>
+						</h6>
+					</div>
+
+					<ul class="flexbox flex-justified text-center my-10">
+						<li class="br-1">
+							<div class="font-size-18"><%=statusTotalMarket[el][1]%></div>
+							<span class="font-size-14">종가</span>
+						</li>
+
+						<li class="br-1">
+							<div class="font-size-18"><%=statusTotalMarket[el][2]%></div>
+							<span class="font-size-14 text-warning">고가</span>
+						</li>
+
+						<li>
+							<div class="font-size-18"><%=statusTotalMarket[el][3]%></div>
+							<span class="font-size-14 text-success">저가</span>
+						</li>
+					</ul>
+
+					<div id="linearea_<%=el%>"></div>
+				</div>
+				<%})%>
+			</div>
+
+
+			<!-- 일별데이터 & 그래프 -->
+			<div class="col-xl-9 col-12">
+				<div class="box box-transparent no-shadow">
+					<div class="box-body">
+						<div class="d-md-flex justify-content-between align-items-center d-inline-block">
+							<h2 class="my-0"><%=curType%><small class="text-secondary"> 일별 데이터</small></h2>
+							<div>
+								<p class="mb-5 text-fade"><%=tickerColNames[1]%></p>
+								<h4 class="mb-0" id="p_last"><%=statusMarket[1]%></h4>
+							</div>
+							<div>
+                                <p class="mb-5 text-fade"><%=tickerColNames[5]%></p>
+                                <% if(Number(statusMarket[5]) > 0){ %>
+                                <h4 class="text-danger mb-0" id="p_ratio"><%=statusMarket[5]%>%</h4>
+                                <% } else if(Number(statusMarket[5]) < 0){ %>
+                                <h4 class="text-info mb-0" id="p_ratio"><%=statusMarket[5]%>%</h4>
+                                <% } else { %>
+                                <h4 class="text-secondary mb-0" id="p_ratio"><%=statusMarket[5]%>%</h4>
+                                <% } %>
+							</div>
+							<div class="d-lg-block d-none">
+								<p class="mb-5 text-fade"><%=tickerColNames[2]%></p>
+								<h4 class="text-warning mb-0" id="p_high"><%=statusMarket[2]%></h4>
+                            </div>
+                            <div class="d-lg-block d-none">
+                                <p class="mb-5 text-fade"><%=tickerColNames[3]%></p>
+                                <h4 class="text-success mb-0" id="p_low"><%=statusMarket[3]%></h4>
+                            </div>
+							<div>
+                                <p class="mb-5 text-fade"><%=tickerColNames[4]%></p>
+                                <h4 class="text-secondary mb-0" id="p_vol"><%=statusMarket[4]%></h4>
+                                <!--
+                                <h4 class="mb-0"><i class="cc BTC font-size-16 mr-10"></i><%=statusMarket[4]%></h4>
+                                -->
+                            </div>
+						</div>
+					</div>
+                </div>	
+                
+				<div class="box">
+					<div class="box-body">
+						<div class="chart">
+							<div id="market-whc" style="height: 452px;"></div>
+						</div>
+					</div>
+                </div>	
+            </div>
+
+			<div class="col-xl-6 col-12">
+				<div class="box">
+					<div class="box-header with-border">
+						<h4 class="box-title">Market Depth</h4>
+					</div>
+					<div class="box-body">
+						<div class="chart">
+							<div id="market-depth" style="height: 371px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-6 col-12">
+				<div class="box" style="height: 463px;">
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs nav-tabs-primary nav-justified" style="height: 58px;" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" style="font-size: 20px; height: 58px; "data-toggle="tab" href="#sell_coin" role="tab">
+								매도
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" style="font-size: 20px; height: 58px;" data-toggle="tab" href="#buy_coin" role="tab">
+								매수
+							</a>
+						</li>
+					</ul>
+
+					<!-- Tab panes -->
+					<div class="box-body tab-content">
+
+						<div class="tab-pane fade active show" id="sell_coin" style="height: 100%;">
+
+							<div class="box">
+								<!-- form start -->
+								<form role="form" class="form-element">
+									<div class="box-header with-border bg-dark">
+										<h4 class="box-title">사용가능 
+											<span id="sell-poss" class="text-info">
+												<%=Number(assetsList.filter(el=>el.currencyName=='whc')[0].amount).toFixed(8)%> WHC
+											</span>
+										</h4>
+									</div>
+									<div class="box-body">
+										<div class="form-group row">
+											<label for="sell-price" class="col-sm-2 control-label">매도 금액</label>
+							
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="sell-price" placeholder="매도 금액">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="sell-amount" class="col-sm-2 control-label">매도량</label>
+							
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="sell-amount" placeholder="매도량">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="sell-total" class="col-sm-2 control-label">총 금액</label>
+							
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="sell-total" placeholder="총 금액" disabled>
+											</div>
+										</div>
+									</div>
+									<!-- /.box-body -->
+									<div class="box-footer text-center">
+										<a href="javascript:void(0);" class="btn btn-info btn-block sell-entrust">WHC 매도</a>
+									</div>
+								</form>
+
+							</div>
+
+							
+						</div>
+
+						<div class="tab-pane fade" id="buy_coin" style="height: 100%;">
+							<div class="box">
+								<!-- form start -->
+								<form role="form" class="form-element">
+									<div class="box-header with-border bg-dark">
+										<h4 class="box-title">사용가능 
+											<span id="buy-poss" class="text-danger">
+												<%=Number(assetsList.filter(el=>el.currencyName=='usdt')[0].amount).toFixed(8)%> USDT
+											</span>
+										</h4>
+									</div>
+									<div class="box-body">
+										<div class="form-group row">
+											<label for="buy-price" class="col-sm-2 control-label">매수 금액</label>
+							
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="buy-price" placeholder="매수 금액">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="buy-amount" class="col-sm-2 control-label">매수량</label>
+							
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="buy-amount" placeholder="매수량">
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="buy-total" class="col-sm-2 control-label">총 금액</label>
+							
+											<div class="col-sm-10">
+												<input type="text" class="form-control" id="buy-total" placeholder="총 금액" disabled>
+											</div>
+										</div>
+									</div>
+									<!-- /.box-body -->
+									<div class="box-footer text-center">
+										<a href="javascript:void(0);" class="btn btn-danger btn-block buy-entrust">WHC 매수</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xl-6 col-12">
+
+				<div class="box">
+					<div class="box-header">
+						<h4 class="box-title">매도 호가</h4>
+						<div class="box-controls pull-right reqTime">
+							UPDATE(<%=reqTime%>)
+						</div>
+					</div>
+					<div class="box-body p-0">
+						<div class="table-responsive buy-sall-table">
+							<table class="table table-hover mb-0">
+								<thead>							  	
+									<tr>
+										<th>매도 가격(USDT)</th>
+										<th>매도 수량(WHC)</th>
+									</tr>
+								</thead>
+								<tbody id="sellReqs">
+								<%marketData.asks.forEach(function(el){%>
+									<tr>
+										<td><i class="cc USDT font-size-14 mr-5"></i><%=Number(el[0]).toFixed(6)%></td> 
+										<td><%=Number(el[1]).toFixed(4)%></td>
+									</tr>
+								<%})%>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="box">
+					<div class="box-header">
+						<h4 class="box-title">매수 호가</h4>
+						<div class="box-controls pull-right reqTime">
+							UPDATE(<%=reqTime%>)
+						</div>
+					</div>
+					<div class="box-body p-0">
+						<div class="table-responsive buy-sall-table">
+							<table class="table table-hover mb-0">
+								<thead>							  	
+									<tr>
+										<th>매수 가격(USDT)</th>
+										<th>매수 수량(WHC)</th>
+									</tr>
+								</thead>
+								<tbody id="buyReqs">
+								<%marketData.bids.forEach(function(el){%>
+									<tr>
+										<td><i class="cc USDT font-size-14 mr-5"></i><%=Number(el[0]).toFixed(6)%></td> 
+										<td><%=Number(el[1]).toFixed(4)%></td>
+									</tr>
+								<%})%>
+								</tbody>							
+							</table>
+						</div>
+					</div>
+				</div>
+				<!-- buy order end -->
+				
+			</div>
+
+			<div class="col-xl-6 col-12">
+				<div class="box" style="height: 1132px;">
+					<div class="box-header">
+						<h4 class="box-title">체결 HISTROY</h4>
+						<div class="box-controls pull-right reqTime">
+							<span id="reqTime3">UPDATE(<%=reqTime%>)</span>
+						</div>
+					</div>
+					<div class="box-body p-0">
+						<div class="table-responsive">
+							<table class="table table-hover mb-0">
+								<thead>							  	
+									<tr>
+										<th>구분</th>
+										<th>가격(USDT)</th>
+										<th>수량(WHC)</th>
+										<th>금액(USDT)</th>
+										<th>체결 시간</th>
+									</tr>
+								</thead>
+								<tbody id="trade_history" class="bb-1 border-dark h-30px">
+								<%
+								tradeHistory.forEach(function(el){
+									if(el[4] == 'ask'){
+								%>    
+									<tr>
+										<td class="text-info">매도</td>
+										<td><i class="cc USDT font-size-14 mr-5"></i> <%=el[5]%></td>
+										<td><%=el[6]%></td>
+										<td><i class="cc USDT font-size-14 mr-5"></i> <%=(el[5]*el[6]).toFixed(6)%></td>
+										<td><%=el[2]%></td> 
+									</tr>
+								<%  } else { %>
+									<tr>
+										<td class="text-danger">매수</td>
+										<td><i class="cc USDT font-size-14 mr-5"></i> <%=el[5]%></td>
+										<td><%=el[6]%></td>
+										<td><i class="cc USDT font-size-14 mr-5"></i> <%=(el[5]*el[6]).toFixed(6)%></td>
+										<td><%=el[2]%></td> 
+									</tr>
+								<%}})%>
+								</tbody>							
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--
+			<div class="col-12">
+				<div class="box box-inverse box-dark">
+				  <div class="box-body">
+					  <ul id="webticker-1">
+						<li class="br-1">
+							<div class="mx-20">
+								<div class="d-flex justify-content-center">
+									<h6 class="text-white-50 font-weight-300 mr-5">BCH<span class="px-5">|</span>BTC </h6>
+									<h6 class="font-weight-300 text-danger"> -2.24%</h6>
+								</div>
+								<div class="d-block text-center">
+									<h3 class=" font-weight-300 my-0">0.04886 <span class="text-white-50">USD</span></h3>
+									<p class="mb-0"><span class="font-weight-300 text-white-50">Volum</span><span class="px-5">20,601</span><span class="text-white-50">BTC</span></p>
+								</div>
+							</div>
+						</li>
+						
+						<li class="br-1">
+							<div class="mx-20">
+								<div class="d-flex justify-content-center">
+									<h6 class="text-white-50 font-weight-300 mr-5">XLM<span class="px-5">|</span>BTC </h6>
+									<h6 class="font-weight-300 text-danger"> -0.97%</h6>
+								</div>
+								<div class="d-block text-center">
+									<h3 class=" font-weight-300 my-0">0.099065 <span class="text-white-50">USD</span></h3>
+									<p class="mb-0"><span class="font-weight-300 text-white-50">Volum</span><span class="px-5">23,601</span><span class="text-white-50">BTC</span></p>
+								</div>
+							</div>
+						</li>  
+						  
+					  </ul>
+				  </div>
+			  </div>
+			</div>
+			-->
+
+		</div>
+		
+	</section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+   
+  <%- include ../_incl/inc_footer.ejs %>
+  <%- include ../_incl/inc_sidebar.ejs %>
+  
+</div>
+<!-- ./wrapper -->
+
+<%- include ../_incl/inc_scripts.ejs %>
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+<!-- webticker -->
+<script src="/assets2/vendor_components/Web-Ticker-master/jquery.webticker.min.js"></script>
+
+<!-- Crypto_Admin dashboard demo (This is only for demo purposes) -->
+<script src="/assets2/js/pages/zbg-dashboard.js"></script>
+<script src="/assets2/js/pages/zbg-chart.js"></script>
+
+<!-- Sparkline -->
+<script src="/assets2/vendor_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+
+<script>
+
+const dataCallTime = 30000;	// 데이터 조회 간격
+const arrTest = ['BTC_USDT', 'ETH_USDT', 'XRP_USDT'/*, 'BCHABC_USDT', 'EOS_USDT', 'XLM_USDT'*/]
+
+$(document).ready(function() {
+    const MARKET_DEPTH_URL = 'https://kline.zbg.com/api/data/v1/entrusts?marketName=WHC_USDT&dataSize=50'
+    marketDepth(MARKET_DEPTH_URL, dataCallTime);
+    getklinesData('1D', '100');	// 데이터 조회 타입(기간), 데이터 갯수
+
+    setInterval(function() {   
+        get24hQuotation();
+		getMarketData();
+		getTradeHistory();
+		setGraphList();
+		getklinesData('1D', '100');
+	}, dataCallTime)
+})
+
+window.onload = function(){
+	setGraphList()
+}
+
+$( window ).resize( function() {
+	setGraphList()
+})
+
+/* 좌측 상단 차트 SET */
+function setGraphList () {
+	arrTest.forEach(function(el){
+		$.ajax({
+			type: 'POST',
+			url: '/zbg/ajax/totalData',
+			data: {
+				marketType: el
+			},
+			success: function(data) {
+				let result = [];
+				if(data.status == '_success_'){
+					//console.log(data.marketOneData[6])
+					let temp1 = replaceAll(data.marketOneData[6],'[','')
+					let temp2 = replaceAll(temp1,']','').split(',')
+					temp2.forEach((el, idx) => {
+						if(idx%2 == 1)
+							result.push(el)
+					})
+					let obj = $('#linearea_'+el)
+					lineGraph(obj, result)
+				} else {
+				}
+			}
+		})
+	})
+}
+
+function lineGraph (obj, data) {
+	obj.sparkline(data, {
+		type: 'line',
+		width: '100%',
+		height: '50',
+		lineColor: '#926dde',
+		fillColor: '#465161',
+		lineWidth: 2,
+	});
+}
+
+</script>
+
+<script>
+
+/* 시세 데이터 조회 ajax */
+function get24hQuotation() {
+	let html = '';
+	let tickerColNames = [];
+	let statusMarket = [];
+	
+	$.ajax({
+		type: 'POST',
+		url: '/zbg/ajax/get24hQuotation',
+		data: {
+			// key: value
+		},
+		success: function(data) {
+			if(data.status == '_success_'){
+				statusMarket = data.statusMarket;
+				$("#p_last").html(statusMarket[1]);
+				$("#p_high").html(statusMarket[2]);
+				$("#p_low").html(statusMarket[3]);
+				$("#p_vol").html(statusMarket[4]);
+				if(Number(statusMarket[5]) > 0){
+					$("#p_ratio").html(statusMarket[5]);
+					$("#p_ratio").attr('class', 'text-danger mb-0');
+				} else if (Number(statusMarket[5]) == 0){
+					$("#p_ratio").html(statusMarket[5]);
+					$("#p_ratio").attr('class', 'text-secondary mb-0');
+				} else {
+					$("#p_ratio").html(statusMarket[5]);
+					$("#p_ratio").attr('class', 'text-info mb-0');
+				}
+
+			} else {
+			}
+		}
+	})
+}    
+
+/* 차트 데이터 ajax */
+function getklinesData(period, dataSize) {
+
+    let klinesData = [];
+    $.ajax({
+        type: 'POST',
+        url: '/zbg/ajax/getKlines2',
+        data: {
+            period: period,         //  1M，5M，15M，30M，1H，1D，1W
+            dataSize: dataSize      //  MAX 100
+        },
+        success: function(data) {
+            if(data.status == '_success_'){
+                loadChart(data.klinesData)
+            } else {
+            }
+        }
+    })
+}
+
+/* 매수매도 호가 조회 ajax */
+function getMarketData() {
+
+	let htmlSell = '';
+	let htmlBuy = '';
+	let sellMarketData = [];
+	let buyMarketData = [];
+
+	$.ajax({
+		type: 'POST',
+		url: '/zbg/ajax/getMarketData',
+		data: {
+			// key: value
+		},
+		success: function(data) {
+			if(data.status == '_success_'){
+
+				sellMarketData = data.marketData.asks;
+				buyMarketData = data.marketData.bids;
+
+				if(data.marketData.length < 1) {
+					html = '해당 카테고리의 데이터가 없습니다.'
+					$("#sellReqs").html(html);
+					$("#buyReqs").html(html);
+					$(".reqTime").html('UPDATE(' + data.reqTime + ')');
+					return;
+				}
+				
+				sellMarketData.forEach(element => {
+					htmlSell += '<tr>'
+					htmlSell += '	<td><i class="cc USDT font-size-14 mr-5"></i>' + Number(element[0]).toFixed(6) + '</td> '
+					htmlSell += '	<td>' + Number(element[1]).toFixed(4) + '</td>'
+					htmlSell += '</tr>'
+				});
+				
+				buyMarketData.forEach(element => {
+					htmlBuy += '<tr>'
+					htmlBuy += '	<td><i class="cc USDT font-size-14 mr-5"></i>' + Number(element[0]).toFixed(6) + '</td> '
+					htmlBuy += '	<td>' + Number(element[1]).toFixed(4) + '</td>'
+					htmlBuy += '</tr>'
+				});
+				
+				$("#sellReqs").html(htmlSell);
+				$("#buyReqs").html(htmlBuy);
+				$(".reqTime").html('UPDATE(' + data.reqTime + ')');
+			} else {
+				$("#sellReqs").html(data.msg);
+				$("#buyReqs").html(data.msg);
+			}
+		}
+	})
+}  
+
+/* 체결 히스토리 조회 ajax */
+function getTradeHistory() {
+
+	let html = '';
+	let tradeHistory = [];
+
+	$.ajax({
+		type: 'POST',
+		url: '/zbg/ajax/getTradeHistory',
+		data: {
+			// key: value
+		},
+		success: function(data) {
+			if(data.status == '_success_'){
+				
+				tradeHistory = data.tradeHistory;
+
+				if(tradeHistory.length < 1) {
+					html = '해당 카테고리의 데이터가 없습니다.'
+					$("#trade_history").html(html);
+					$("#reqTime3").html('UPDATE(' + data.reqTime + ')');
+					return;
+				}
+				
+				tradeHistory.forEach(element =>{
+					if(element[4] == 'ask'){
+						html += '<tr> '
+						html += '	<td class="text-info">매도</td> '
+						html += '	<td><i class="cc USDT font-size-14 mr-5"></i>' + element[5] + '</td> '
+						html += '	<td>' + element[6] + '</td> '
+						html += '	<td><i class="cc USDT font-size-14 mr-5"></i>' + (element[5]*element[6]).toFixed(6) + '</td> '
+						html += '	<td>' + element[2] + '</td>  '
+						html += '</tr> '
+					} else {
+						html += '<tr> '
+						html += '	<td class="text-danger">매수</td> '
+						html += '	<td><i class="cc USDT font-size-14 mr-5"></i>' + element[5] + '</td> '
+						html += '	<td>' + element[6] + '</td> '
+						html += '	<td><i class="cc USDT font-size-14 mr-5"></i>' + (element[5]*element[6]).toFixed(6) + '</td> '
+						html += '	<td>' + element[2] + '</td>  '
+						html += '</tr> '
+				}})
+
+				$("#trade_history").html(html);
+				$("#reqTime3").html('UPDATE(' + data.reqTime + ')');
+			} else {
+				html = data.msg;
+				$("#trade_history").html(html);
+			}
+		}
+	})
+}  
+</script>
+
+<script>
+$('.sell-entrust').click(function(e) {
+	e.preventDefault();
+
+	$.ajax({
+		type: 'POST',
+		url: '/zbg/ajax/entrustSellBuy',
+		data: {
+			amount: $('#sell-amount').val(),
+			type: 0,
+			price: $('#sell-price').val()
+		},
+		success: function(data) {
+			if(data.status == '_success_' && data.code == ''){
+				toastAlert(data.msg, '[CODE] : '+data.code, 'success')
+			} else {
+				toastAlert(data.msg, '[CODE] : '+data.code, 'error')
+			}
+		}
+	})
+
+})
+
+
+</script>
+
+
+</body>
+</html>

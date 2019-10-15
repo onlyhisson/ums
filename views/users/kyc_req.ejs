@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include ../_incl/inc_header.ejs %>
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+<div class="wrapper">
+
+  <%- include ../_incl/inc_top.ejs %>
+  <%- include ../_incl/inc_submenu.ejs %>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        <%=title%>
+      </h1>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#"><i class="fa fa-cc-mastercard"></i> KYC</a></li>
+        <li class="breadcrumb-item active"><%=title%></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+     
+     <!-- Basic Forms -->
+      <div class="box">
+          <!--
+        <div class="box-header with-border">
+			<h3 class="box-title"><%=title%></h3>
+			<h6 class="box-subtitle">
+				<span id="is_kyc" class="text-danger"></span> 
+			</h6>
+
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+          </div>
+        </div>
+        -->
+        <!-- /.box-header -->
+        <div class="box-body">
+          <div class="row">
+            <div class="col">
+            	<form>
+                    
+                    <div class="form-group">
+                        <h5>엔젤마스터 계정 <span class="text-danger">*</span></h5>
+                        <div class="controls">
+                            <select name="angel_cards" id="angel_cards" required class="form-control">
+                                <option value="">엔젤마스터카드의 계정을 선택하여 주십시오</option>
+                                <% sess.cardList.forEach((el) => { %>
+                                <option value="<%=el.card_no%>"><%=el.card_no%> [<%=el.unit%>]</option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+				</form>
+
+				<div class="bb-1 border-dark h-30"></div><br>
+
+				<form id="send-kyc-form">
+					<div class="form-group">
+						<h5>
+							KYC 신청서
+							<span class="text-danger">*</span>
+							<small> 
+								(파일 크기 <code>3Mb</code>이하)
+							</small>
+						</h5>
+						<label style="padding-top: 7px;">
+							<span class="text-info">[신청서 다운로드]</span>
+							| <a href="/pdf/cn.pdf" target="_blank" class="text-danger">중문</a>
+							| <a href="/pdf/tw.pdf" target="_blank" class="text-danger">번문</a>
+							| <a href="/pdf/en.pdf" target="_blank" class="text-danger">영어</a>
+							| <a href="/pdf/krw.pdf" target="_blank" class="text-danger">한국어</a>
+						</label>
+						<div class="controls">
+							<div class="input-group input-file" name="Fichier1">
+								<input type="text" id="" name="text" class="form-control selected_file" placeholder='정자, 자필로 작성한 KYC 신청서' required> 
+								<span class="input-group-btn">
+									<button type="reset" class="btn btn-default border-danger del-file" >삭제</button>
+									<button type="submit" class="btn btn-info">업로드</button>
+								</span> 
+							</div>
+						</div>
+					</div>
+					
+					<div class="bb-1 border-secondary h-30"></div><br>
+
+					<div class="text-xs-right" style="padding-top: 30px;">
+						<a href="javascript:void(0)" class="btn btn-lg btn-success send-kyc">확정</a>
+						<span id="kyc_verification">* KYC 신청서 파일을 업로드 하십시오.</span>
+					</div>
+				</form>
+            	
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+      
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  
+   
+  <%- include ../_incl/inc_footer.ejs %>
+  <%- include ../_incl/inc_sidebar.ejs %>
+  
+</div>
+<!-- ./wrapper -->
+
+<%- include ../_incl/inc_scripts.ejs %>
+
+<script>
+let checkImage = false;
+
+</script>
+
+<script>
+/* 파일 업로드 Form 함수 */
+function bs_input_file() {
+	$(".input-file").before(
+		function() {
+			if ( ! $(this).prev().hasClass('input-ghost') ) {
+				var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+				element.attr("name",$(this).attr("name"));
+				element.change(function(){
+					element.next(element).find('input').val((element.val()).split('\\').pop());
+				});
+				$(this).find("button.btn-choose").click(function(){
+					element.click();
+				});
+				$(this).find("button.btn-reset").click(function(){
+					element.val(null);
+					$(this).parents(".input-file").find('input').val('');
+				});
+				$(this).find('input').css("cursor","pointer");
+				$(this).find('input').mousedown(function() {
+					$(this).parents('.input-file').prev().click();
+					return false;
+				});
+				return element;
+			}
+		}
+	);
+}
+
+$(function() {
+	bs_input_file();
+});
+
+/* 파일 삭제 버튼 클릭 이벤트 */
+$('.del-file').click(function() {
+	checkImage = false;
+	checkKycInfo();
+})
+</script>
+
+<script>
+/* KYC 신청서 업로드 */
+$('#send-kyc-form').on("submit", function(e) {
+	e.preventDefault();
+
+	let selectedFile = $(this).find('.selected_file');
+	let formData = new FormData(this);
+	//formData.append('key', 'value');
+	$('.btn-info').css('display', 'none')
+
+	if($('.input-ghost').val()){
+		$.ajax({
+		type: "POST",
+		url: "/ajax/getImageUrl",
+		data: formData,
+		processData: false,
+		contentType: false,
+		success: function(data){
+			if(data.status == '_success_'){
+				selectedFile.val(data.picUrl);
+				checkImage = true;
+			}else{
+				toastAlert(ums.error[3000], '', 'error')
+			}
+			$('.btn-info').css('display', '')
+		},
+		error: function (e) {
+			toastAlert(ums.error[1000], '', 'error')
+			$('.btn-info').css('display', '')
+		}
+	});
+	}else{
+		toastAlert(ums.error[2000], '', 'error')
+		$('.btn-info').css('display', '')
+	}
+})
+</script>
+
+<script>
+	/* 데이터 요청 */
+	$('.send-kyc').click(function(){
+
+		if(!checkKycInfo())
+			return;
+		
+		// 페이지로더 띄우기
+		$.ajax({
+				type: 'POST',
+				url: '/users/ajax/sendKycForm',
+				data: {
+					card_no: $('#angel_cards').val(),
+					file_url: $('.selected_file').val()
+			},
+			success: function(data) {
+				if(data.status =='_success_' && data.code == 10000){
+					$('#angel_cards').val('');
+					$('.selected_file').val('');
+					toastAlert(data.msg, '[CODE] : '+data.code, 'success')
+				} else {
+					toastAlert(data.msg, '[CODE] : '+data.code, 'error')
+				}
+				$('.btn-info').css('display', '')
+			}
+		})
+	})
+</script>
+
+<script>
+	/* 유효성 검증 */
+	checkKycInfo = () => {
+		if($('#angel_cards').val() == '') {
+			$('#kyc_verification').html('* 엔젤마스터 계정을 선택하십시오.');
+			$('#kyc_verification').attr('class', 'text-danger')
+			return false;
+		}
+
+		if(!checkImage) {
+			$('#kyc_verification').html('* KYC 신청서 파일을 업로드 하십시오.');
+			$('#kyc_verification').attr('class', 'text-danger')
+			return false;
+		}
+
+		$('#kyc_verification').html('');
+		return true;
+	};
+</script>
+</body>
+</html>
