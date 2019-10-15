@@ -1,0 +1,11 @@
+.vscode/
+bin/
+config/
+node_modules/
+temp/
+public/assets2/css
+public/assets2/images
+public/assets2/pdf
+public/assets2/js
+public/assets2/vendor_components/
+public/assets2/vendor_plugins/
