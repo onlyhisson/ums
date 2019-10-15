@@ -14,7 +14,7 @@
 					  <h2 class="headline text-white"> <i class="fa fa-gear fa-spin"></i></h2>
 					  <h2 class="margin-top-0"><i class="fa fa-bell text-danger"></i> <%=code%> <i class="fa fa-bell text-danger"></i></h2>
                       <h3 class="margin-top-0"><i class="fa fa-warning text-warning"></i> <%=message%></h3>
-                      <div class="text-center"><a href="javascript:void(0)" class="btn btn-info btn-block margin-top-10">이전 페이지 이동 (<span id="countDown">5</span>)</a></div>
+					  <div class="text-center"><a href="javascript:void(0)" class="btn btn-info btn-block margin-top-10">이전 페이지 이동 (<span id="countDown">5</span>)</a></div>
 				  </div>
 				</div>
 				<!-- /.error-content -->
@@ -31,13 +31,13 @@
 
 	<script>
 	$(document).ready(function() {
+		let redirectUrl = $('#custId').val();
 		let count = 5;
 		setInterval(function() {
 			count--;
 			$('#countDown').html(count)
-			if(count == 0){
+			if(count == 0)
 				history.go(-1);
-			}
 		}, 1000)
 
 	})

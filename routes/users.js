@@ -20,7 +20,7 @@ const API_CARD_STAR = '/userapi/card_star';   // 엔젤 5등급
 
 
 /* 사용자 정보 페이지 */
-router.get('/user_info', common.ensureAuth, function(req, res, next) {
+router.get('/user_info', common.ensureAuth, async (req, res, next) => {
 
   let apiObj = {
     apiid: '',
@@ -28,13 +28,12 @@ router.get('/user_info', common.ensureAuth, function(req, res, next) {
     status: 0
   }
 
-  Promise.try(function(){
-    return zbgFunc.getZbgSecretKey(req.user.email)
-  }).then(function(data) {
-    if(data.length > 0) {
-      apiObj.apiid= data[0].apiid;
-      apiObj.apikey= data[0].apikey;
-      apiObj.status= data[0].status;
+  try {
+    let data1 = await zbgFunc.getZbgSecretKey(req.user.email);
+    if(data1.length > 0) {
+      apiObj.apiid= data1[0].apiid;
+      apiObj.apikey= data1[0].apikey;
+      apiObj.status= data1[0].status;
     }
 
     res.render('users/user_info', 
@@ -44,16 +43,16 @@ router.get('/user_info', common.ensureAuth, function(req, res, next) {
         sess: req.user
       }
     );
-  }).catch(function(err) {
+  } catch (err) {
     console.log(err)
     res.render('error', 
       { 
-        code: '로컬 시스템 에러',
-        message: 'DB 데이터를 불러올 수 없습니다.',
+        code: 80000,
+        message: errMsg[80000],
         sess: req.user
       }
     );
-  })
+  }
 });
 
 /* KYC 인증 페이지 */
@@ -106,33 +105,32 @@ router.get('/update_pw', common.ensureAuth, function(req, res, next) {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /* ZBG 거래소 API insert */
-router.post('/ajax/updateApiInfo', common.ensureAuth, function(req, res, next) {
+router.post('/ajax/updateApiInfo', common.ensureAuth, async (req, res, next) => {
 
   let apiId = req.body.api_id || '';
   let apiKey = req.body.api_key || '';
 
-  Promise.try(function(){
-    return zbgFunc.getZbgSecretKey(req.user.email)
-  }).then(function(data) {
-    if(data.length > 0){
-      return updateZbgApiInfo(req.user.email, apiId, apiKey)
+  try {
+    let data1 = await zbgFunc.getZbgSecretKey(req.user.email);
+    let data2 = {};
+    if(data1.length > 0){
+      data2 = await updateZbgApiInfo(req.user.email, apiId, apiKey)
     } else {
-      return insertZbgApiInfo(req.user.email, apiId, apiKey)
+      data2 = await insertZbgApiInfo(req.user.email, apiId, apiKey)
     }
-  }).then(function(data) {
-    console.log(data)
+    console.log(data2)
     res.send({
       status: '_success_',
       msg: 'ZBG 거래소 API 입력 완료'
     })
-  }).catch(function(err){
+  } catch(err) {
     console.log(err)
     res.send({
       status: '_error_', 
       code: '90001',
       msg: errMsg[90001]
     })
-  })
+  }
 });
 
 /* kyc 인증요청 */

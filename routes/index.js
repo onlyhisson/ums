@@ -19,45 +19,35 @@ const API_LANGUAGE = '/userapi/language';
 ***************************************************/
 
 /* GET home page. */
-router.get('/', common.ensureAuth, function(req, res, next) {
+router.get('/', common.ensureAuth, async (req, res, next) => {
 
   let token = req.user.token;
   let noticeOneList = [];     // 해당 공지사항 데이터 리스트
   req.user.noticeList = [];
 
-  Promise.try(function() {
-    return getNoticeList(token)
-  }).then(function(data) {
-    req.user.noticeList = data; // 공지사항 카테고리
-    return getNoticeOneList(req)
-  }).then(function(data) {
-    //console.log(data.page)
-    //console.log(data.total_pages)
-    //console.log(data.total_nums)
-    //console.log(data.list.id)
-    //console.log(data.list.cate_id)
-    //console.log(data.list.lang)
-    //console.log(data.list.title)
-    //console.log(data.list.sub_title)
-    //console.log(data.list.pic_url)
-    //console.log(data.list.data) // html 문서 response
-    //console.log(data.list.create_at) 
-    noticeOneList = data.list;
-    return getLangList(token)
-  }).then(function(data) {
-    req.user.langList = data; // Language 목록
+  try {
+    let data1 = await getNoticeList(token);
+    req.user.noticeList = data1; // 공지사항 카테고리
+
+    let data2 = await getNoticeOneList(req);
+    noticeOneList = data2.list;
+
+    let data3 = await getLangList(token);
+    req.user.langList = data3; // Language 목록
     
-    if((!req.user.kycCheck && req.user.is_kyc == 0) || (!req.user.kycCheck && req.user.is_kyc == 3)) { // kyc 통과되지 않거나 다시 제출 필요시
+    // kyc 통과되지 않거나 다시 제출 필요시
+    if((!req.user.kycCheck && req.user.is_kyc == 0) || (!req.user.kycCheck && req.user.is_kyc == 3)) { 
       req.user.kycCheck = true;
       res.redirect('/users/kyc')
     } else {
       res.render('index', { 
         title: '공지사항',
         sess: req.user,
-        noticeOneList: noticeOneList
+        noticeOneList
       });
     }
-  }).catch(function(err){
+
+  } catch(err) {
     console.log(err)
     /*
     req.send({
@@ -65,7 +55,7 @@ router.get('/', common.ensureAuth, function(req, res, next) {
       msg: 'error'
     })
     */
-  })
+  }
 });
 
 router.post('/login', passport.authenticate('local', {
@@ -144,7 +134,7 @@ router.post('/register', function(req, res, next) {
   });
 });
 
-router.get('/notice_detail/:cateId/:postId', common.ensureAuth, function(req, res, next) {
+router.get('/notice_detail/:cateId/:postId', common.ensureAuth, async (req, res, next) => {
 
   let cateId = req.params.cateId;
   let postId = req.params.postId;
@@ -157,11 +147,9 @@ router.get('/notice_detail/:cateId/:postId', common.ensureAuth, function(req, re
     }
   });
 
-  Promise.try(function() {
-    return getNoticeOneList(req, cateId)
-  }).then(function(data) {
-    console.log(data.list)
-    noticeDetail = data.list.find(function (n){
+  try {
+    let data1 = await getNoticeOneList(req, cateId);
+    noticeDetail = data1.list.find(function (n){
       return n.id == postId;
     })
 
@@ -173,18 +161,16 @@ router.get('/notice_detail/:cateId/:postId', common.ensureAuth, function(req, re
         createTime: noticeDetail.create_at,
         noticeDetail:noticeDetail.data,
         picUrl:noticeDetail.pic_url
-      }
-    );
-  }).catch(function(err){
+    });
+  } catch(err) {
     console.log(err)
     // 에러처리 필요함 
     res.render('error', 
     { 
-      code: '9000'
+      code: 90000,
+      message: errMsg[90000]
     })
-  })
-
-  
+  }
 });
 
 router.get('/user_protocol', common.ensureAuth, function(req, res, next) {
@@ -200,24 +186,32 @@ router.get('/user_protocol', common.ensureAuth, function(req, res, next) {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /* 공지사항 카테고리 선택시 해당 공지사항 리스트 조회 */
-router.post('/ajax/getNoticeOneList', function(req, res, next) {
+router.post('/ajax/getNoticeOneList', async (req, res, next) => {
 
+  let token = req.user.token;
   let cateId = req.body.cateId;
+  let noticeList = [];
+  let noticeOneList = [];
 
-  Promise.try(function(){
-    return getNoticeOneList(req, cateId)
-  }).then(function(data) {
+  try {
+    let data1 = await getNoticeList(token);
+    noticeList = data1; // 공지사항 카테고리
+
+    let data2 = await getNoticeOneList(req, cateId);
+    noticeOneList = data2.list;
+
     res.json({
       status: '_success_',
-      noticeOneList: data.list
+      noticeList,
+      noticeOneList
     })
-  }).catch(function(err){
+  } catch(err) {
+    console.log(err)
     res.json({
       status:'_error_',
       msg: 'API 통신 에러'
     })
-  })
-
+  }
 });
 
 /* 이미지 업로드 공통함수 */

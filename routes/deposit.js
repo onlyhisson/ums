@@ -68,36 +68,37 @@ const TEMP_TOTAL_DATA  = [
 /***************************************************
 # prepix : /deposit
 ***************************************************/
-router.get('/deposit_cash_req', common.ensureAuth, function(req, res, next) {
+router.get('/deposit_cash_req', common.ensureAuth, async (req, res, next) => {
 
   let token = req.user.token
-  Promise.all([getAcceptCardList(token)])
-  .then(values => {
+
+  try {
+    let data1 = await getAcceptCardList(token);
     req.user.accCardList = [];
-    req.user.accCardList = values[0]; 
+    req.user.accCardList = data1; 
+    
     res.render('deposit/deposit_cash_req', { 
       title: '충전신청(현금)',
       sess: req.user
     });
-  })
-  .catch(error => {
-    console.log(error);
+  } catch(err) {
+    console.log(err);
     res.render('error', {
-      code: '',
-      msg: 'API 서버 통신 에러'
+      code: 90000,
+      msg: errMsg[90000]
     })
-  })
-
+  }
 });
 
-router.get('/deposit_cash_bd', common.ensureAuth, function(req, res, next) {
+router.get('/deposit_cash_bd', common.ensureAuth, async (req, res, next) => {
 
-  console.log(req.user)
   let token = req.user.token
+  let depCashList = [];
 
-  Promise.all([getDepCashList(token)])
-  .then(values => {
-    let depCashList = values[0].data.list || [];
+  try {
+    let data1 = await getDepCashList(token);
+    depCashList = data1.data.list || [];
+
     res.render('deposit/deposit_cash_bd', { 
       title: '충전내역(현금)',
       sess: req.user,
@@ -106,14 +107,15 @@ router.get('/deposit_cash_bd', common.ensureAuth, function(req, res, next) {
       cur_type: CUR_TYPE,
       status_color: STATUS_COLOR
     });
-  })
-  .catch(error => {
-    console.log(error);
+
+  } catch(err) {
+    console.log(err);
     res.render('error', {
-      code: '',
-      msg: 'API 서버 통신 에러'
+      code: 90000,
+      msg: errMsg[90000]
     })
-  })
+  }
+
 });
 
 router.get('/deposit_crypto_currency', common.ensureAuth, function(req, res, next) {
@@ -125,53 +127,54 @@ router.get('/deposit_crypto_currency', common.ensureAuth, function(req, res, nex
   );
 });
 
-router.get('/deposit_epay_req', common.ensureAuth, function(req, res, next) {
+router.get('/deposit_epay_req', common.ensureAuth, async (req, res, next) => {
 
   let token = req.user.token
-  Promise.all([getAcceptCardList(token)])
-  .then(values => {
+
+  try {
+    let data1 = await getAcceptCardList(token);
+
     req.user.accCardList = [];
-    req.user.accCardList = values[0]; 
+    req.user.accCardList = data1; 
     res.render('deposit/deposit_epay_req', { 
       title: '충전신청(EPAY)',
       sess: req.user
     });
-  })
-  .catch(error => {
-    console.log(error);
+
+  } catch(err) {
+    console.log(err);
     res.render('error', {
-      code: '',
-      msg: 'API 서버 통신 에러'
+      code: 90000,
+      msg: errMsg[90000]
     })
-  })
+  }
 });
 
-router.get('/deposit_epay_bd', common.ensureAuth, function(req, res, next) {
+router.get('/deposit_epay_bd', common.ensureAuth, async (req, res, next) => {
+  
+  let epayList = [];
 
-  Promise.all([lineRecord(req, {})])
-  .then(values => {
-    let epayList = [];
-    if(values[0].status == 10000)
-      epayList = values[0].data.list;
+  try {
+    let data1 = await lineRecord(req, {});
+    if(data1.status == 10000)
+      epayList = data1.data.list;
       
     res.render('deposit/deposit_epay_bd', 
       { 
         title: '충전내역(EPAY)',
         sess:req.user,
-        epayList: epayList,
+        epayList,
         epayStatus: EPAY_STATUS,
         epayStColor: EPAY_ST_COLOR
       }
     );
-  })
-  .catch(error => {
+  } catch(err) {
     console.log(error);
     res.render('error', {
-      code: '',
-      msg: 'API 서버 통신 에러'
+      code: 90000,
+      msg: errMsg[90000]
     })
-  })
-  
+  }
 });
 
 router.get('/deposit_total_bd', common.ensureAuth, function(req, res, next) {
@@ -194,54 +197,56 @@ router.get('/deposit_total_bd', common.ensureAuth, function(req, res, next) {
     2. api서버 전송
     3. api서버 이미지 경로(URL) return 
 */
-router.post('/ajax/getImageUrl', common.ensureAuth, function(req, res, next){
+router.post('/ajax/getImageUrl', common.ensureAuth, async (req, res, next) => {
   var file_name = '';
   var pic_url = '';
 
-  Promise.try(function(){
-      return common.saveImage(req, res); // local 에 이미지 저장
-  }).then(function(data) {
-      file_name = data.fileName;
-      return common.uploadApi(req.user.token, file_name) // api 서버에 이미지 전송
-  }).then(function(data) {
-      pic_url = data.url || '';
-      return common.deleteFile(file_name);   // local 에 저장했던 이미지 삭제
-  }).then(function(data) {
-      res.json({
-          status: '_success_',
-          picUrl: pic_url
-      })
-  }).catch(function(err){ 
+  try {
+    let data1 = await common.saveImage(req, res); // local 에 이미지 저장
+    file_name = data1.fileName;
+
+    let data2 = await common.uploadApi(req.user.token, file_name) // api 서버에 이미지 전송
+    pic_url = data2.url || '';
+
+    let data3 = await common.deleteFile(file_name);   // local 에 저장했던 이미지 삭제
+
+    res.json({
+      status: '_success_',
+      picUrl: pic_url
+    })
+
+  } catch(err) {
     console.log(err)
-      res.json({
-          status: '_error_'
-      })
-  })  
+    res.json({
+        status: '_error_'
+    })
+  }
 })
 
 /* 충전신청(현금) */
-router.post('/ajax/req_deposit_cash', common.ensureAuth, function(req, res, next) {
-  
-  Promise.try(function(){
-      return amtDeposit(req)
-  }).then(function(data) {
-        res.json({
-        status: '_success_',
-        code: data.status,
-        msg: errMsg[data.status],
-        url: '/deposit/deposit_cash_bd'
+router.post('/ajax/req_deposit_cash', common.ensureAuth, async (req, res, next) => {
+
+  try {
+    let data1 = await amtDeposit(req);
+    res.json({
+      status: '_success_',
+      code: data1.status,
+      msg: errMsg[data1.status],
+      url: '/deposit/deposit_cash_bd'
     })
-  }).catch(function(err){
-        res.json({
-        status:'_error_',
-        msg: 'API 통신 에러'
+  } catch(err) {
+    console.log(err)
+    res.json({
+      status:'_error_',
+      msg: errMsg[90000]
     })
-  })
+  }
 });
 
-/* 충전신청(현금) */
-router.post('/ajax/req_deposit_epay', common.ensureAuth, function(req, res, next) {
+/* 충전신청(EPAY) */
+router.post('/ajax/req_deposit_epay', common.ensureAuth, async (req, res, next) => {
 
+  let url = '';
   /*
   if(req.user.is_kyc != 2) {
     res.json({
@@ -252,27 +257,27 @@ router.post('/ajax/req_deposit_epay', common.ensureAuth, function(req, res, next
   }
   */
 
-  Promise.try(function(){
-      return lineDeposit(req)
-  }).then(function(data) {
-    let url = data.url || '';
-    
+  try {
+    let data1 = await lineDeposit(req);
+    url = data1.url || '';
+
     // 해당페이지 응답 성공 Temp 데이터
     if(req.user.email == 'test3@163.com')
       url = 'https://www.ums.hk/userapi/jump/order_sn/19091915054409035042/sign/C835619C1F7CA41C7913EAD39A214C23'
 
     res.json({
       status: '_success_',
-      code: data.status,
-      msg: errMsg[data.status],
-      url: url
+      code: data1.status,
+      msg: errMsg[data1.status],
+      url
     })
-  }).catch(function(err){
-        res.json({
-        status:'_error_',
-        msg: 'API 통신 에러'
+  } catch(err) {
+    res.json({
+      status:'_error_',
+      msg: errMsg[90000]
     })
-  })
+  }
+
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////

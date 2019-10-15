@@ -15,18 +15,18 @@ const API_SUGGEST = '/userapi/suggest';                 // 문의 및 제안 목
 # prepix : /suggest
 ***************************************************/
 
-router.get('/suggestion', common.ensureAuth, function(req, res, next) {
+router.get('/suggestion', common.ensureAuth, async (req, res, next) => {
 
     let sug_list = [];
     let result = {};
 
-    Promise.try(function() {
-        return getSuggestList(req.user.token)
-    }).then(function(data) {
-        result.page = data.page || 1;
-        result.total_pages = data.total_pages || 1;
-        result.total_nums = data.total_nums || 0;
-        sug_list = data.list || [];
+    try {
+        let data1 = await getSuggestList(req.user.token);
+        result.page = data1.page || 1;
+        result.total_pages = data1.total_pages || 1;
+        result.total_nums = data1.total_nums || 0;
+        sug_list = data1.list || [];
+
         res.render('suggest/suggestion', { 
             title: '문의/건의',
             sess: req.user,
@@ -35,13 +35,15 @@ router.get('/suggestion', common.ensureAuth, function(req, res, next) {
             totalNum: result.total_nums,
             suggestList: sug_list
         });
-    }).catch(function(err){
+
+    } catch(err) {
         console.log(err)
         res.render('suggest/suggestion', { 
             title: '문의/건의',
             sess:req.user
         });
-    })
+    }
+
 });
 
 router.get('/suggestion_add', common.ensureAuth, function(req, res, next) {
@@ -54,31 +56,30 @@ router.get('/suggestion_add', common.ensureAuth, function(req, res, next) {
     );
 });
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// ajax
+//////////////////////////////////////////////////////////////////////////////////////////
+
 /* 문의글 쓰기 */
-router.post('/ajax/suggestion_add', common.ensureAuth, function(req, res, next) {
+router.post('/ajax/suggestion_add', common.ensureAuth, async (req, res, next) => {
     let params = {};
     params.token = req.user.token;
     params.content = req.body.content || '';
     params.pic = req.body.pic || '';
 
-    Promise.try(function(){
-        return writeSuggestion(params)
-    }).then(function(data) {
-            res.json({
+    try {
+        let data1 = await writeSuggestion(params);
+        res.json({
             status: '_success_',
             url: '/suggest/suggestion'
         })
-    }).catch(function(err){
-            res.json({
+    } catch(err) {
+        res.json({
             status:'_error_',
-            msg: 'API 통신 에러'
+            msg: errMsg[90000]
         })
-    })
+    }
 });
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// ajax
-//////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // function
@@ -95,7 +96,6 @@ function getSuggestList (token, page, status, limit) {
     bindVal['limit'] = limit || 10;
     bindVal['sign'] = common.sign(bindVal, global.merchant_key);
 
-    console.log(bindVal)
     return new Promise(function(resolve, reject){  
         agent.callApi('post', API_SUGGEST_RECORD, bindVal, function (err, result) {
             if(err) {
@@ -120,7 +120,6 @@ function writeSuggestion(obj) {
     bindVal['pic'] = obj.pic;
     bindVal['sign'] = common.sign(bindVal, global.merchant_key);
 
-    console.log(bindVal)
     return new Promise(function(resolve, reject){  
         agent.callApi('post', API_SUGGEST, bindVal, function (err, result) {
             if(err) {
