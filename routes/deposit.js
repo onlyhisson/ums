@@ -259,7 +259,7 @@ router.post('/ajax/req_deposit_epay', common.ensureAuth, async (req, res, next) 
 
   try {
     let data1 = await lineDeposit(req);
-    url = data1.url || '';
+    url = data1.data.url || '';
 
     // 해당페이지 응답 성공 Temp 데이터
     if(req.user.email == 'test3@163.com')

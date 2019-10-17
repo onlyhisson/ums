@@ -175,10 +175,10 @@ router.get('/notice_detail/:cateId/:postId', common.ensureAuth, async (req, res,
 
 router.get('/user_protocol', common.ensureAuth, function(req, res, next) {
   res.render('user_protocol', 
-    { 
-      //title: '' 
-    }
-  );
+  { 
+    title: '' ,
+    sess: req.user,
+  });
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////

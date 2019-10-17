@@ -159,7 +159,7 @@
         success: function(data) {
           if(data.status =='_success_' && data.code==10000){
             toastAlert(data.msg, '[CODE] : '+data.code, 'success')
-            window.location = data.url;
+            window.open(data.url, '_blank');
           } else {
             toastAlert(data.msg, '[CODE] : '+data.code, 'error')
           }
