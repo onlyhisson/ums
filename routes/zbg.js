@@ -317,17 +317,22 @@ router.post('/ajax/getKlines', common.ensureAuth, async (req, res, next) => {
 router.post('/ajax/getKlines2', common.ensureAuth, async (req, res, next) => {
 
   let klinesData = [];
+  let klinesData2 = [];
 
   try {
     let data1 = await getKlines2(req.body.period, req.body.dataSize);
     klinesData = data1.datas || [];
 
     let data2 = await editKinesData2(klinesData);
-    klinesData = data2;
-    
+    klinesData2 = data2;
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    console.log(klinesData2)
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
     res.send({ 
       status: '_success_',
-      klinesData
+      klinesData: klinesData2
     });
   } catch(err) {
     console.log(err) 
@@ -447,8 +452,8 @@ function getKlines (dataType, dataSize) {
   let bindVal = {};
   bindVal['isUseMarketName'] = 'true';
   bindVal['marketName'] = WHC_USDT;
-  bindVal['type'] = dataType || '1M'; //1M，5M，15M，30M，1H，1D，1W
-  bindVal['dataSize'] = dataSize || 50; // max 100
+  bindVal['type'] = dataType || '1D'; //1M，5M，15M，30M，1H，1D，1W
+  bindVal['dataSize'] = dataSize || 100; // max 100
   
   return new Promise(function(resolve, reject){  
     agent.zbgApi('get', API_KLINES, bindVal, function (err, result) {
@@ -465,12 +470,11 @@ function getKlines (dataType, dataSize) {
 
 /* 1.3 K-Line2 */
 function getKlines2 (dataType, dataSize) {
-
   let bindVal = {};
   bindVal['isUseMarketName'] = 'true';
   bindVal['marketName'] = WHC_USDT;
-  bindVal['type'] = dataType || '1M'; //1M，5M，15M，30M，1H，1D，1W
-  bindVal['dataSize'] = dataSize || 50; // max 100
+  bindVal['type'] = dataType || '1D'; //1M，5M，15M，30M，1H，1D，1W
+  bindVal['dataSize'] = dataSize || 100; // max 100
   
   return new Promise(function(resolve, reject){  
     agent.zbgApi('get', API_KLINES, bindVal, function (err, result) {
@@ -478,7 +482,7 @@ function getKlines2 (dataType, dataSize) {
         console.log(err)
         reject(err)
       } else {
-        //common.sendResultForm2(config.zbg_host+API_KLINES, bindVal, result)
+        common.sendResultForm2(config.zbg_host+API_KLINES, bindVal, result)
         resolve(result);
       }
     });
