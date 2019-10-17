@@ -65,7 +65,7 @@ setInterval(
       statusTotalMarket = editTotal || {}
     } catch(error) {
       console.log('###### GLOBAL DATA CALL ERROR START #####')
-      console.log(err)
+      console.log(error)
       console.log('###### GLOBAL DATA CALL ERROR END   #####')
     }
   }
