@@ -325,11 +325,6 @@ router.post('/ajax/getKlines2', common.ensureAuth, async (req, res, next) => {
 
     let data2 = await editKinesData2(klinesData);
     klinesData2 = data2;
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-    console.log(klinesData2)
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
     res.send({ 
       status: '_success_',
       klinesData: klinesData2
